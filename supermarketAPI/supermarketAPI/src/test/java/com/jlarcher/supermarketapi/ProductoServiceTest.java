@@ -26,6 +26,8 @@ public class ProductoServiceTest {
         Producto producto = new Producto();
         producto.setNombre("Producto 1");
         producto.setPrecio(10.0);
+        producto.setDescripcion("test simple");
+        producto.setCantidad(4);
 
         Mockito.when(productoRepository.save(any(Producto.class))).thenReturn(producto);
 

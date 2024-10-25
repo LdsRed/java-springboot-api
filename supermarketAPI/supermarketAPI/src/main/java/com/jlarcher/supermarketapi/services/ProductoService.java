@@ -32,10 +32,10 @@ public class ProductoService {
     public Producto actualizarProducto(Long id, Producto producto) {
         return productoRepository.findById(id)
                 .map( producto1 -> {
-                    producto.setNombre(producto1.getNombre());
-                    producto.setPrecio(producto1.getPrecio());
-                    producto.setDescripcion(producto1.getDescripcion());
-                    return productoRepository.save(producto);
+                    producto1.setNombre(producto.getNombre());
+                    producto1.setPrecio(producto.getPrecio());
+                    producto1.setDescripcion(producto.getDescripcion());
+                    return productoRepository.save(producto1);
                 }).orElseThrow(() -> new RuntimeException("No se encontro el producto"));
     }
 

@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.4'
     id 'io.spring.dependency-management' version '1.1.6'
+    id 'info.solidsoft.pitest' version '1.15.0'
 }
 
 group = 'com.jlarcher'
@@ -36,7 +37,7 @@ dependencies {
     implementation 'io.springfox:springfox-swagger2:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.4.1'
-
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
 }
 
 tasks.named('test') {
