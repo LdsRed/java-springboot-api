@@ -33,11 +33,21 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.assertj:assertj-core:3.26.3'
+    testImplementation group: 'org.testcontainers', name: 'testcontainers', version: '1.20.2'
     implementation 'org.pitest:pitest:1.17.0'
     implementation 'io.springfox:springfox-swagger2:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.4.1'
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
+}
+
+
+
+pitest {
+    targetClasses = ['com.jlarcher.supermarketapi.controllers.*', 'com.jlarcher.supermarketapi.services.*']
+    outputFormats = ['XML', 'HTML']
+    timestampedReports = false
+    junit5PluginVersion = '0.15'
 }
 
 tasks.named('test') {

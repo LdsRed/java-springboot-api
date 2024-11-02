@@ -3,7 +3,7 @@ package com.jlarcher.supermarketapi.controllers;
 
 import com.jlarcher.supermarketapi.model.Producto;
 import com.jlarcher.supermarketapi.services.ProductoService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +14,11 @@ import java.util.List;
 @RequestMapping("/api/productos")
 public class SuperMarketController {
 
-    @Autowired
-    private ProductoService productoService;
+    private final ProductoService productoService;
+
+    public SuperMarketController(ProductoService productoService) {
+        this.productoService = productoService;
+    }
 
     @PostMapping
     public ResponseEntity<Producto> addProducto(@RequestBody Producto producto) {
