@@ -10,20 +10,21 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
 import java.util.Arrays;
 import java.util.Optional;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 
 
 
 
+@ExtendWith(MockitoExtension.class)
 @WebMvcTest(SuperMarketController.class)
 public class SuperMarketControllerTestIntegration {
 
@@ -36,13 +37,9 @@ public class SuperMarketControllerTestIntegration {
     @Test
     void addProducto2() throws Exception {
 
-
-
         Producto producto = new Producto(1L, "Jabon", 5000, "jabon de tocador", 5);
 
         when(productoService.crearProducto(any(Producto.class))).thenReturn(producto);
-
-
 
 
         mockMvc.perform(post("/api/productos")

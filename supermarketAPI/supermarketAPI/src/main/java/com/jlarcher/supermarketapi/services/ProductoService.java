@@ -12,9 +12,13 @@ import java.util.Optional;
 public class ProductoService {
 
 
-    @Autowired
+
     private ProductoRepository productoRepository;
 
+
+    public ProductoService(ProductoRepository productoRepository) {
+        this.productoRepository = productoRepository;
+    }
 
     public Producto crearProducto(Producto producto) {
         return productoRepository.save(producto);
