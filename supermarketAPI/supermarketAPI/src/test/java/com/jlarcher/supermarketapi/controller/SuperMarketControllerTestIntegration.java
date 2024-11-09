@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -19,9 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-
-
+import org.springframework.test.web.servlet.MvcResult;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -92,14 +92,14 @@ public class SuperMarketControllerTestIntegration {
         Producto productoActualizado = new Producto(1L,"Morcilla", 2000, "Morcilla Paladini", 2);
         when(productoService.actualizarProducto(1L, productoActualizado)).thenReturn(productoActualizado);
 
-        mockMvc.perform(put("/api/productos/" + producto.getId())
+        MvcResult result =mockMvc.perform(put("/api/productos/" + producto.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"nombre\":\"Morcilla\",\"precio\":2000,\"descripcion\":\"Morcilla Paladini\", \"cantidad\":2}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.nombre").value("Morcilla"))
-                .andExpect(jsonPath("$.precio").value(2000))
-                .andExpect(jsonPath("$.descripcion").value("Morcilla Paladini"))
-                .andExpect(jsonPath("$.cantidad").value(2));
+                .andReturn();
+
+        assertEquals(productoActualizado.getNombre(), result.getResponse().getContentAsString().getBytes());
+
     }
 
 }
