@@ -4,6 +4,7 @@ package com.jlarcher.supermarketapi.controller;
 import com.jlarcher.supermarketapi.controllers.SuperMarketController;
 import com.jlarcher.supermarketapi.model.Producto;
 import com.jlarcher.supermarketapi.services.ProductoService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -98,7 +99,7 @@ public class SuperMarketControllerTestIntegration {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        assertEquals(productoActualizado.getNombre(), result.getResponse().getContentAsString().getBytes());
+        Assertions.assertEquals(productoActualizado.getNombre(), result.getResponse().getContentAsString().getBytes());
 
     }
 
