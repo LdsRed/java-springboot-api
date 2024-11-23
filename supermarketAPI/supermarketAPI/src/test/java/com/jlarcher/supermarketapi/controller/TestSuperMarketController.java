@@ -41,7 +41,7 @@ public class TestSuperMarketController {
     private ObjectMapper objectMapper;
 
     @Test
-    void addProducto2() throws Exception {
+    void addProducto() throws Exception {
 
         Producto producto = new Producto(1L, "Jabon", 5000, "jabon de tocador", 5);
 
@@ -55,7 +55,7 @@ public class TestSuperMarketController {
                 .andExpect(jsonPath("$.nombre").value("Jabon"))
                 .andExpect( jsonPath("$.precio").value(5000))
                 .andExpect(jsonPath("$.descripcion").value("jabon de tocador"))
-                .andExpect( jsonPath("$.cantidad").value(5));  // Asegúrate de que "jabon de tocador" coincide exactamente
+                .andExpect( jsonPath("$.cantidad").value(5));
     }
 
 

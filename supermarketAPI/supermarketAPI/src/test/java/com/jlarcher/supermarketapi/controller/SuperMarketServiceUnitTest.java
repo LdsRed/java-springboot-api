@@ -13,10 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class SuperMarketServiceUnitTest {
@@ -40,11 +38,48 @@ public class SuperMarketServiceUnitTest {
 
         var result = superMarketController.addProducto(producto).getBody();
         assertNotNull(result);
-        assertEquals("Pepito", result.getNombre());
+        assertEquals("Jabon", result.getNombre());
         assertEquals(producto.getDescripcion(), result.getDescripcion());
         assertEquals(producto.getPrecio(), result.getPrecio());
         assertEquals(producto.getCantidad(), result.getCantidad());
-        verify(superMarketController).addProducto(producto);
+
+        //Verify the interaction with the service
+        verify(superMarketService).crearProducto(producto);
+    }
+
+    @Test
+    void addProduct_InvalidProduct_ThrowsBadRequestException(){
+        Producto producto = new Producto(null, null, -5000, null, -1);
+
+        //Acc & Assertion
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            superMarketController.addProducto(producto);
+        });
+
+        assertEquals("Datos del producto no validos", exception.getMessage());
+
+        //verify the interactions
+        verifyNoInteractions(superMarketService);
+    }
+
+
+    @Test
+    void addProduct_ServiceThrowsException_ThrowsInternalServerError() throws Exception{
+
+        //Arrange
+        Producto producto = new Producto(1L, "Jabon", 500, "Jabon intimo", 2);
+
+        when(superMarketService.crearProducto(any(Producto.class)))
+                .thenThrow(new RuntimeException("Error al crear el producto"));
+
+        //Act & Assert
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            superMarketController.addProducto(producto);
+        });
+
+
+        assertEquals("Error al crear el producto", exception.getMessage());
     }
 
 
