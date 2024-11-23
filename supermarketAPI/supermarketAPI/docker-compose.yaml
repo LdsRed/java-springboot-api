@@ -1,0 +1,61 @@
+version: '3.9'
+
+services:
+  supermarketapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILE_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      SPRING_DATASOURCE_URL: jdbc:mariadb://supermarket_db:3306/supermarket?createDatabaseIfNotExist=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-admin}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-1998}
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.mariadb.jdbc.Driver
+    restart: always
+    depends_on:
+      - supermarket_db_dev
+      - supermarket_db_prod
+
+  supermarket_db_dev:
+    image: mariadb:10.11
+    container_name: db-dev
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_DEV_ROOT_PASSWORD:-1998}
+      MARIADB_DATABASE: ${DB_DEV_NAME:-supermarket_dev}
+      MARIADB_USER: ${DB_DEV_USER:-admin_dev}
+      MARIADB_PASSWORD: ${DB_DEV_PASSWORD:-1998}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadb_data_dev:/var/lib/mysql
+    restart: always
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uadmin", "-p1998" ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
+  supermarket_db_prod:
+    image: mariadb:10.11
+    container_name: db-prod
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_PROD_ROOT_PASSWORD:-1998}
+      MARIADB_DATABASE: ${DB_PROD_NAME:-supermarket_prod}
+      MARIADB_USER: ${DB_PROD_USER:-admin_prod}
+      MARIADB_PASSWORD: ${DB_PROD_PASSWORD:-1998}
+    ports:
+      - "3308:3306"
+    volumes:
+      - mariadb_data_prod:/var/lib/mysql
+    restart: always
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uadmin", "-p1998" ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  mariadb_data_dev:
+  mariadb_data_prod:

@@ -32,7 +32,7 @@ class ProductoServiceTest {
 
 
     @Test
-    void crearProducto() {
+    void testCrearProducto() {
 
         Producto producto1 = new Producto(1L, "Jabon", 5000, "jabon de tocador", 5);
 
@@ -51,7 +51,7 @@ class ProductoServiceTest {
     }
 
     @Test
-    void listarProductos() {
+    void testListarProductos() {
 
         Producto producto1 = new Producto(1L, "Pan", 5000, "pan de molde", 5);
         Producto producto2 = new Producto(2L, "Leche", 5001, "leche entera", 5);
@@ -72,7 +72,7 @@ class ProductoServiceTest {
     }
 
     @Test
-    void obtenerPorID() {
+    void testObtenerPorID() {
 
         Producto producto = new Producto(1L, "Queso", 3000, "queso rallado", 2);
         when(productoRepository.findById(producto.getId())).thenReturn(Optional.of(producto));
@@ -89,30 +89,40 @@ class ProductoServiceTest {
     }
 
     @Test
-    void actualizarProducto() {
+    void testActualizarProducto() {
 
-        Producto producto1 = new Producto(1L, "Carpetas", 5000, "Carpetas de colores", 5);
+        //Arrange
+        Producto productoExistente = new Producto(1L, "Carpetas", 5000, "Carpetas de colores", 5);
         Producto productoActualizado = new Producto( 1L, "Carpetas Inc", 4000, "Carpetas Inc clasificada de colores", 2);
 
-        when(productoRepository.save(productoActualizado)).thenReturn(productoActualizado);
+        when(productoRepository.findById(1L)).thenReturn(Optional.of(productoExistente));
+        when(productoRepository.save(any(Producto.class))).thenReturn(productoActualizado);
 
 
+        //Act
         Producto result = productoService.actualizarProducto(1L, productoActualizado);
 
+        //Assert
         assertNotNull(result);
-        assertEquals(productoActualizado.getNombre(), result.getNombre());
-        assertEquals(productoActualizado.getDescripcion(), result.getDescripcion());
-        assertEquals(productoActualizado.getCantidad(), result.getCantidad());
-        assertEquals(productoActualizado.getId(), result.getId());
-        verify(productoRepository, times(1)).save(productoActualizado);
+        assertNotEquals("Morcilla", result.getNombre());
+        assertNotEquals(2000, result.getPrecio());
+
+
+        // Verify
+        verify(productoRepository).save(argThat(actualizado ->
+                actualizado.getNombre().equals("Carpetas Inc") &&
+                actualizado.getPrecio() == 4000 &&
+                actualizado.getDescripcion().equals("Carpetas Inc clasificada de colores") &&
+                actualizado.getCantidad() == 2
+        ));
 
     }
 
     @Test
-    void eliminarProducto() {
+    void testEliminarProducto() {
         Producto producto = new Producto(1L, "Carpetas Inc", 4000, "Carpetas Inc clasificada de colores", 2);
 
         productoService.eliminarProducto(producto.getId());
-        verify(productoRepository, times(1)).delete(producto);
+        verify(productoRepository).deleteById(producto.getId());
     }
 }

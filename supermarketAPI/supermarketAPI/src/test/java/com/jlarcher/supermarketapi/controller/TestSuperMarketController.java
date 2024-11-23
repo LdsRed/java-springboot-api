@@ -1,6 +1,8 @@
 package com.jlarcher.supermarketapi.controller;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.jlarcher.supermarketapi.controllers.SuperMarketController;
 import com.jlarcher.supermarketapi.model.Producto;
 import com.jlarcher.supermarketapi.services.ProductoService;
@@ -11,11 +13,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
 import java.util.Arrays;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -27,13 +30,15 @@ import org.springframework.test.web.servlet.MvcResult;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(SuperMarketController.class)
-public class SuperMarketControllerTestIntegration {
+public class TestSuperMarketController {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private ProductoService productoService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
     void addProducto2() throws Exception {
@@ -71,14 +76,14 @@ public class SuperMarketControllerTestIntegration {
 
 
     @Test
-    void getProductoById() throws Exception {
+    void testetProductoById() throws Exception {
 
         Producto producto = new Producto(1L,"Queso", 3000, "queso rallado", 2);
 
         when(productoService.obtenerPorID(producto.getId())).thenReturn(Optional.of(producto));
 
 
-        mockMvc.perform(get("/api/productos"))
+        mockMvc.perform(get("/api/productos/{id}", producto.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nombre").value("Queso"))
                 .andExpect( jsonPath("$.precio").value(3000))
@@ -89,18 +94,70 @@ public class SuperMarketControllerTestIntegration {
 
     @Test
     void testUpdateProduct() throws Exception{
+
+        //Arrange
         Producto producto = new Producto(1L,"Queso", 3000, "queso rallado", 2);
         Producto productoActualizado = new Producto(1L,"Morcilla", 2000, "Morcilla Paladini", 2);
+
+
+
         when(productoService.actualizarProducto(1L, productoActualizado)).thenReturn(productoActualizado);
 
-        MvcResult result =mockMvc.perform(put("/api/productos/" + producto.getId())
+        String updatedProductAsString = objectMapper.writeValueAsString(productoActualizado);
+
+        MvcResult result =mockMvc.perform(put("/api/productos/{id}", producto.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"nombre\":\"Morcilla\",\"precio\":2000,\"descripcion\":\"Morcilla Paladini\", \"cantidad\":2}"))
-                .andExpect(status().isOk())
-                .andReturn();
+                        .content(updatedProductAsString))
+                        .andExpect(status().isOk())
+                        .andReturn();
 
-        Assertions.assertEquals(productoActualizado.getNombre(), result.getResponse().getContentAsString().getBytes());
+        String jsonResult = result.getResponse().getContentAsString();
+        Producto productAsResult = objectMapper.readValue(jsonResult, Producto.class);
 
+        // Validate the updated product
+        Assertions.assertNotNull(productAsResult);
+        Assertions.assertEquals(productoActualizado.getNombre(), productAsResult.getNombre());
+        verify(productoService).actualizarProducto(producto.getId(), productoActualizado);
+    }
+
+    @Test
+    void testGetProductByIdNotFound() throws Exception{
+        Long nonExistenID = 99L;
+
+        when(productoService.obtenerPorID(nonExistenID)).thenReturn(Optional.empty());
+
+
+        mockMvc.perform(get("/api/productos/{id}", nonExistenID))
+                .andExpect(status().isNotFound());
+
+    }
+
+
+    @Test
+    void testDeleteProducto() throws Exception{
+
+        Long productId = 1L;
+
+
+        mockMvc.perform(delete("/api/productos/{id}", productId))
+                .andExpect(status().isNoContent());
+
+        verify(productoService).eliminarProducto(productId);
+    }
+
+
+
+    @Test
+    void testAddProductoInvalidInput() throws Exception {
+
+        Producto productoInvalido = new Producto(null, "Producto Invalido", -100, "Descripcion", 2 );
+
+        String invalidProductJson = objectMapper.writeValueAsString(productoInvalido);
+
+        mockMvc.perform(post("/api/productos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidProductJson))
+                .andExpect(status().isBadRequest());
     }
 
 }

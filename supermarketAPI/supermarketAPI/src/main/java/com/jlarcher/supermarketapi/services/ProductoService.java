@@ -2,6 +2,7 @@ package com.jlarcher.supermarketapi.services;
 
 import com.jlarcher.supermarketapi.model.Producto;
 import com.jlarcher.supermarketapi.repository.ProductoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,9 @@ public class ProductoService {
     }
 
     public Producto crearProducto(Producto producto) {
+        if (producto.getPrecio() <=0){
+            throw new IllegalArgumentException("El precio debe ser mayor a 0");
+        }
         return productoRepository.save(producto);
     }
 
@@ -41,7 +45,7 @@ public class ProductoService {
                     producto1.setDescripcion(producto.getDescripcion());
                     producto1.setCantidad(producto.getCantidad());
                     return productoRepository.save(producto1);
-                }).orElseThrow(() -> new RuntimeException("No se encontro el producto"));
+                }).orElseThrow(() -> new EntityNotFoundException("No se encontro el producto"));
     }
 
 

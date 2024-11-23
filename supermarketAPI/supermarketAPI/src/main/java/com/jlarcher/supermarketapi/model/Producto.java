@@ -5,6 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,9 +21,16 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "El nombre no puede estar vacio")
     private String nombre;
+
+    @Positive(message = "El precio debe ser un valor positivo")
     private double precio;
+
+
     private String descripcion;
+
+    @PositiveOrZero(message = "La cantidad debe ser un valor positivo")
     private int cantidad;
 
 
