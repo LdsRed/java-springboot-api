@@ -38,6 +38,10 @@ public class ProductoService {
 
 
     public Producto actualizarProducto(Long id, Producto producto) {
+
+        if (producto.getPrecio() < 0 ) {
+            throw  new IllegalArgumentException("El precio debe ser mayor a 0");
+        }
         return productoRepository.findById(id)
                 .map( producto1 -> {
                     producto1.setNombre(producto.getNombre());

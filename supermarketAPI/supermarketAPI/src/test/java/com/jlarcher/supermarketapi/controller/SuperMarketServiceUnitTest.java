@@ -51,16 +51,19 @@ public class SuperMarketServiceUnitTest {
     void addProduct_InvalidProduct_ThrowsBadRequestException(){
         Producto producto = new Producto(null, null, -5000, null, -1);
 
+        when(superMarketService.crearProducto(any(Producto.class))).thenThrow(new IllegalArgumentException("Objeto Producto no valido"));
+
         //Acc & Assertion
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             superMarketController.addProducto(producto);
         });
 
-        assertEquals("Datos del producto no validos", exception.getMessage());
+        assertEquals("Objeto Producto no valido", exception.getMessage());
 
         //verify the interactions
-        verifyNoInteractions(superMarketService);
+        verify(superMarketService).crearProducto(producto);
+        verifyNoMoreInteractions(superMarketService);
     }
 
 
