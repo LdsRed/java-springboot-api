@@ -5,12 +5,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     environment:
-      SPRING_PROFILE_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
-      SPRING_DATASOURCE_URL: jdbc:mariadb://supermarket_db:3306/supermarket?createDatabaseIfNotExist=true&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: ${DB_USER:-admin}
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-1998}
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.mariadb.jdbc.Driver
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
     restart: always
     depends_on:
       - supermarket_db_dev
@@ -30,7 +28,7 @@ services:
       - mariadb_data_dev:/var/lib/mysql
     restart: always
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uadmin", "-p1998" ]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u${DB_DEV_USER}", "-p${DB_DEV_PASSWORD}" ]
       interval: 10s
       timeout: 10s
       retries: 3
@@ -49,7 +47,7 @@ services:
       - mariadb_data_prod:/var/lib/mysql
     restart: always
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uadmin", "-p1998" ]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u${DB_PROD_USER}", "-p${DB_PROD_PASSWORD}" ]
       interval: 10s
       timeout: 10s
       retries: 3

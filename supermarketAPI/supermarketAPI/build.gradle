@@ -45,6 +45,8 @@ dependencies {
 
 
 
+
+
 pitest {
     targetClasses = ['com.jlarcher.supermarketapi.controllers.*', 'com.jlarcher.supermarketapi.services.*']
     outputFormats = ['XML', 'HTML']
@@ -61,4 +63,5 @@ group = 'com.jlarcher'
 
 jar {
     archiveBaseName = 'supermarketapi'
+    archiveVersion = '0.0.1'
 }
