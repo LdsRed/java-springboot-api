@@ -33,29 +33,35 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.assertj:assertj-core:3.26.3'
-    testImplementation group: 'org.testcontainers', name: 'testcontainers', version: '1.20.2'
-    implementation 'org.pitest:pitest:1.17.0'
+    //implementation 'org.pitest:pitest:1.17.0'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.4.1'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
     implementation 'jakarta.el:jakarta.el-api:6.0.1'
+    // PIT Plugins
+    pitest("org.pitest:pitest-junit5-plugin:1.2.1")
+    pitest("org.pitest:pitest-command-line:1.17.0")
 
 }
-
-
-
-
 
 pitest {
-    targetClasses = ['com.jlarcher.supermarketapi.controllers.*', 'com.jlarcher.supermarketapi.services.*']
+    targetClasses =[ 'com.jlarcher.*']
     outputFormats = ['XML', 'HTML']
     timestampedReports = false
-    junit5PluginVersion = '0.15'
+    verbose = true
+    //junit5PluginVersion = '1.15.0'
+    pitestVersion = '1.15.0'
+    //mutationThreshold = 80
+    //coverageThreshold = 80
 }
 
-tasks.named('test') {
+
+test {
     useJUnitPlatform()
+    testLogging {
+		events "passed", "skipped", "failed"
+	}
 }
 
 

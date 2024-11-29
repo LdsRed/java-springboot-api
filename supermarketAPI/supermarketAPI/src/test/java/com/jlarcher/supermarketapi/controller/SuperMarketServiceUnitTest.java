@@ -78,7 +78,7 @@ public class SuperMarketServiceUnitTest {
 
         //Act & Assert
         Exception exception = assertThrows(RuntimeException.class, () -> {
-            superMarketController.addProducto(producto);
+            superMarketService.crearProducto(producto);
         });
 
 
@@ -157,7 +157,7 @@ public class SuperMarketServiceUnitTest {
 
         when(superMarketService.actualizarProducto(1L, productoActualizado)).thenReturn(productoActualizado);
 
-        var result = superMarketController.updateProducto(1L, productoActualizado).getBody();
+        var result = superMarketService.actualizarProducto(1L, productoActualizado);
 
         assertNotNull(result);
         assertEquals("Morcilla", result.getNombre());

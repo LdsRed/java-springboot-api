@@ -29,7 +29,6 @@ public class SuperMarketController {
     }
 
 
-
     @GetMapping
     public List<Producto> getAllProductos() {
         return productoService.listarProductos();
