@@ -4,6 +4,7 @@ package com.jlarcher.supermarketapi.controllers;
 import com.jlarcher.supermarketapi.model.Producto;
 import com.jlarcher.supermarketapi.services.ProductoService;
 
+import com.jlarcher.supermarketapi.services.ProductoServiceValidation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
@@ -17,13 +18,16 @@ import java.util.List;
 public class SuperMarketController {
 
     private final ProductoService productoService;
+    private final ProductoServiceValidation productoServiceValidation;
 
-    public SuperMarketController(ProductoService productoService) {
+    public SuperMarketController(ProductoService productoService, ProductoServiceValidation productoServiceValidation) {
         this.productoService = productoService;
+        this.productoServiceValidation = productoServiceValidation;
     }
 
     @PostMapping
     public ResponseEntity<Producto> addProducto(@Valid @RequestBody Producto producto) {
+        productoServiceValidation.validarProducto(producto);
         Producto nuevoProducto = productoService.crearProducto(producto);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoProducto);
     }
@@ -45,6 +49,7 @@ public class SuperMarketController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Producto> updateProducto(@Positive @PathVariable Long id, @Valid@RequestBody Producto producto) {
+        productoServiceValidation.validarProducto(producto);
         Producto productoActualizado = productoService.actualizarProducto(id, producto);
         return ResponseEntity.ok(productoActualizado);
     }

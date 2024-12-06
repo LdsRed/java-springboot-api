@@ -12,8 +12,6 @@ import java.util.Optional;
 @Service
 public class ProductoService {
 
-
-
     private ProductoRepository productoRepository;
 
 
@@ -22,26 +20,26 @@ public class ProductoService {
     }
 
     public Producto crearProducto(Producto producto) {
-        if (producto.getPrecio() <=0){
-            throw new IllegalArgumentException("El precio debe ser mayor a 0");
-        }
         return productoRepository.save(producto);
     }
 
     public List<Producto> listarProductos(){
         return productoRepository.findAll();
     }
+
+
     public Optional<Producto> obtenerPorID(Long id){
-        return productoRepository.findById(id);
+        return Optional.ofNullable(productoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("El Producto con el ID " + id + " no fue encontrado ")));
     }
 
 
 
     public Producto actualizarProducto(Long id, Producto producto) {
+        if(productoRepository.findById(id).equals(producto.getId())){
 
-        if (producto.getPrecio() < 0 ) {
-            throw  new IllegalArgumentException("El precio debe ser mayor a 0");
         }
+
         return productoRepository.findById(id)
                 .map( producto1 -> {
                     producto1.setNombre(producto.getNombre());

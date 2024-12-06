@@ -11,6 +11,8 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Entity
 @Getter
 @Setter
@@ -53,4 +55,17 @@ public class Producto {
         this.cantidad = cantidad;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Producto producto = (Producto) obj;
+        return Objects.equals(id, producto.id)
+                && Objects.equals(nombre, producto.nombre)
+                && precio == producto.precio;
+    }
 }

@@ -50,6 +50,7 @@ pitest {
     outputFormats = ['XML', 'HTML']
     timestampedReports = false
     verbose = true
+    mutators = ['ALL']
     //junit5PluginVersion = '1.15.0'
     pitestVersion = '1.15.0'
     //mutationThreshold = 80
