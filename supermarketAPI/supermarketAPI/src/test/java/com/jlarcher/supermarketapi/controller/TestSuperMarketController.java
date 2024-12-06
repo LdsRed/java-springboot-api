@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.web.servlet.MvcResult;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -90,7 +93,7 @@ public class TestSuperMarketController {
     }
 
 
-   /* @Test
+    @Test
     void testUpdateProduct() throws Exception{
 
         //Arrange
@@ -116,10 +119,10 @@ public class TestSuperMarketController {
         Producto productAsResult = objectMapper.readValue(jsonResult, Producto.class);
 
         // Validate the updated product
-        Assertions.assertNotNull(productAsResult);
-        Assertions.assertEquals(productoActualizado.getNombre(), productAsResult.getNombre());
+        assertNotNull(productAsResult);
+        assertEquals(productoActualizado.getNombre(), productAsResult.getNombre());
         verify(productoService).actualizarProducto(producto.getId(), productoActualizado);
-    } */
+    }
 
     @Test
     void testGetProductByIdNotFound() throws Exception{
