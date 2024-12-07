@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hibernate.validator.internal.util.Contracts.assertNotEmpty;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -135,9 +134,7 @@ class ProductoServiceTest {
         when(productoRepository.findById(888L)).thenReturn(Optional.empty());
 
 
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            productoService.obtenerPorID(id).orElseThrow(() -> new RuntimeException("El Producto con el ID " + id + " no fue encontrado "));
-        });
+        Exception exception = assertThrows(RuntimeException.class, () -> productoService.obtenerPorID(id).orElseThrow(() -> new RuntimeException("El Producto con el ID " + id + " no fue encontrado ")));
 
         assertEquals("El Producto con el ID " + id + " no fue encontrado " , exception.getMessage());
         verify(productoRepository).findById(id);
@@ -162,6 +159,7 @@ class ProductoServiceTest {
 
         //Assert
         assertNotNull(result);
+        assertEquals(productoExistente.getId(), productoActualizado.getId());
         assertNotEquals("Morcilla", result.getNombre());
         assertNotEquals(2000, result.getPrecio());
 

@@ -3,16 +3,16 @@ package com.jlarcher.supermarketapi.services;
 import com.jlarcher.supermarketapi.model.Producto;
 import com.jlarcher.supermarketapi.repository.ProductoRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@Slf4j
 @Service
 public class ProductoService {
 
-    private ProductoRepository productoRepository;
+    private final ProductoRepository productoRepository;
 
 
     public ProductoService(ProductoRepository productoRepository) {
@@ -20,7 +20,12 @@ public class ProductoService {
     }
 
     public Producto crearProducto(Producto producto) {
-        return productoRepository.save(producto);
+        return productoRepository.findById(producto.getId())
+                .map(productoExistente -> {
+                   productoExistente.setCantidad(productoExistente.getCantidad() + producto.getCantidad());
+                   return productoRepository.save(productoExistente);
+                })
+                .orElseGet(() -> productoRepository.save(producto));
     }
 
     public List<Producto> listarProductos(){
@@ -29,17 +34,18 @@ public class ProductoService {
 
 
     public Optional<Producto> obtenerPorID(Long id){
-        return Optional.ofNullable(productoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("El Producto con el ID " + id + " no fue encontrado ")));
+
+        try{
+            return productoRepository.findById(id);
+        } catch (EntityNotFoundException e) {
+            log.error("No se encontro el producto con el ID: " + id, e);
+            return Optional.empty();
+        }
     }
 
 
 
     public Producto actualizarProducto(Long id, Producto producto) {
-        if(productoRepository.findById(id).equals(producto.getId())){
-
-        }
-
         return productoRepository.findById(id)
                 .map( producto1 -> {
                     producto1.setNombre(producto.getNombre());
@@ -52,6 +58,10 @@ public class ProductoService {
 
 
     public void eliminarProducto(Long id) {
+        if (!productoRepository.existsById(id)){
+            log.error("El producto no existe");
+            throw new EntityNotFoundException("El Producto con el ID " + id + " no fue encontrado");
+        }
         productoRepository.deleteById(id);
     }
 
