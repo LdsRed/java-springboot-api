@@ -8,15 +8,19 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
 @Getter
 @Setter
-
+@AllArgsConstructor
+@NoArgsConstructor
 public class Producto {
 
     @Id
@@ -27,7 +31,7 @@ public class Producto {
     private String nombre;
 
     @Positive(message = "El precio debe ser un valor positivo")
-    private double precio;
+    private BigDecimal precio;
 
 
     private String descripcion;
@@ -36,24 +40,6 @@ public class Producto {
     private int cantidad;
 
 
-    public Producto(){
-
-    }
-
-    public Producto(Long id, String nombre, double precio, String descripcion, int cantidad) {
-        this.id = id;
-        this.nombre = nombre;
-        this.precio = precio;
-        this.descripcion = descripcion;
-        this.cantidad = cantidad;
-    }
-
-    public Producto(String nombre, double precio, String descripcion, int cantidad) {
-        this.nombre = nombre;
-        this.precio = precio;
-        this.descripcion = descripcion;
-        this.cantidad = cantidad;
-    }
 
     @Override
     public boolean equals(Object obj) {

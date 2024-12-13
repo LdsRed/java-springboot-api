@@ -1,17 +1,18 @@
 package com.jlarcher.supermarketapi.controllers;
 
 
+import com.jlarcher.supermarketapi.exceptions.ProductNotFoundException;
 import com.jlarcher.supermarketapi.model.Producto;
 import com.jlarcher.supermarketapi.services.ProductoService;
 
 import com.jlarcher.supermarketapi.services.ProductoServiceValidation;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/productos")
@@ -26,7 +27,7 @@ public class SuperMarketController {
     }
 
     @PostMapping
-    public ResponseEntity<Producto> addProducto(@Valid @RequestBody Producto producto) {
+    public ResponseEntity<Producto> createProducto(@Valid @RequestBody Producto producto) {
         productoServiceValidation.validarProducto(producto);
         Producto nuevoProducto = productoService.crearProducto(producto);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoProducto);
@@ -40,24 +41,27 @@ public class SuperMarketController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Producto> getProductoById(@PathVariable Long id) {
-        return productoService.obtenerPorID(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public ResponseEntity<?> getProductoById(@PathVariable Long id) {
+        try {
+            Producto producto = productoService.obtenerPorID(id);
+            return new ResponseEntity<>(producto, HttpStatus.OK); // Retorna el producto con status 200 OK
+        } catch (ProductNotFoundException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND); // Retorna el mensaje de error con status 404 Not Found
+        }
     }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> updateProducto(@Positive @PathVariable Long id, @Valid@RequestBody Producto producto) {
-        productoServiceValidation.validarProducto(producto);
-        Producto productoActualizado = productoService.actualizarProducto(id, producto);
-        return ResponseEntity.ok(productoActualizado);
+    public ResponseEntity<Producto> updateProducto(@PathVariable Long id, @Valid @RequestBody Producto producto) {
+        Producto productoActualizado = productoService.actualizarProducto(id, productoServiceValidation.validarProducto(producto));
+        return new ResponseEntity<>(productoActualizado, HttpStatus.OK);
     }
 
 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Producto> deleteProducto(@PathVariable Long id) {
+        productoServiceValidation.validarIDProductoAeliminar(id);
         productoService.eliminarProducto(id);
         return ResponseEntity.noContent().build();
     }
