@@ -17,13 +17,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -104,7 +102,7 @@ public class SuperMarketControllerIntegrationTest {
         Producto productoActualizado = new Producto(1L,"Morcilla", new BigDecimal(2000), "Morcilla Paladini", 2);
 
 
-        when(productoServiceValidation.validarProducto(productoActualizado)).thenReturn(productoActualizado);
+        doNothing().when(productoServiceValidation.validarProducto(productoActualizado));
         when(productoService.actualizarProducto(producto.getId(), productoActualizado)).thenReturn(productoActualizado);
 
         String updatedProductAsString = objectMapper.writeValueAsString(productoActualizado);

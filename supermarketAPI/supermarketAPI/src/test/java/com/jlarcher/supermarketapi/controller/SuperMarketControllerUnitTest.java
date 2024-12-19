@@ -35,11 +35,11 @@ public class SuperMarketControllerUnitTest {
     void test_Crear_Producto_Valido() {
         Producto producto = new Producto(1L, "Jabon", new BigDecimal(5000), "jabon de tocador", 5);
 
-        when(productoServiceValidation.validarProducto(producto)).thenReturn(producto);
+        //when(productoServiceValidation.validarProducto(producto)).doNothing();
         when(productoService.crearProducto(any(Producto.class))).thenReturn(producto);
 
         //Producto result = superMarketController.addProducto(producto).getBody();
-        ResponseEntity<Producto> response = superMarketController.createProducto(producto);
+        ResponseEntity<?> response = superMarketController.createProducto(producto);
 /*
         boolean isNotNull = result != null;
         assumingThat(isNotNull, () -> {
@@ -104,7 +104,7 @@ public class SuperMarketControllerUnitTest {
         Producto producto3 = new Producto(3L, "Dulce de Leche", new BigDecimal(2500), "Dulce de leche tradicional", 2);
         when(productoService.listarProductos()).thenReturn(Arrays.asList(producto1,producto2, producto3));
 
-        List<Producto> response = superMarketController.getAllProductos();
+        List<Producto> response = superMarketController.getAllProductos().getBody();
 
         assertNotNull(response);
         assertEquals(3, response.size());

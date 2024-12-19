@@ -3,7 +3,6 @@ package com.jlarcher.supermarketapi.services;
 import com.jlarcher.supermarketapi.exceptions.ProductNotFoundException;
 import com.jlarcher.supermarketapi.model.Producto;
 import com.jlarcher.supermarketapi.repository.ProductoRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
