@@ -37,7 +37,7 @@ public class ProductoService {
 
     public Producto obtenerPorID(Long id){
             return productoRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado con ID: " + id));
+                .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado con el ID provisto"));
     }
 
 

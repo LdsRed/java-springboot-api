@@ -133,7 +133,7 @@ class ProductoServiceUnitTest {
 
         Exception exception = assertThrows(ProductNotFoundException.class, () -> productoService.obtenerPorID(id));
 
-        assertEquals("Producto no encontrado con ID: " + id , exception.getMessage());
+        assertEquals("Producto no encontrado con el ID provisto" , exception.getMessage());
         verify(productoRepository).findById(id);
     }
 

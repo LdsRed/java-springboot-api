@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jlarcher.supermarketapi.controllers.SuperMarketController;
 import com.jlarcher.supermarketapi.exceptions.ProductNotFoundException;
 import com.jlarcher.supermarketapi.model.Producto;
+import com.jlarcher.supermarketapi.model.SucessResponse;
 import com.jlarcher.supermarketapi.services.ProductoService;
 import com.jlarcher.supermarketapi.services.ProductoServiceValidation;
 import org.junit.jupiter.api.Test;
@@ -71,9 +72,9 @@ public class SuperMarketControllerIntegrationTest {
 
         mockMvc.perform(get("/api/productos"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].nombre").value("Jabon"))
-                .andExpect( jsonPath("$[1].nombre").value("Shampoo"))
-                .andExpect( jsonPath("$.length()").value(2));
+                .andExpect(jsonPath("$.data[0].nombre").value("Jabon"))
+                .andExpect( jsonPath("$.data[1].nombre").value("Shampoo"))
+                .andExpect( jsonPath("$.data.length()").value(2));
     }
 
 
@@ -87,10 +88,10 @@ public class SuperMarketControllerIntegrationTest {
 
         mockMvc.perform(get("/api/productos/{id}", producto.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.nombre").value("Queso"))
-                .andExpect( jsonPath("$.precio").value(3000))
-                .andExpect( jsonPath("$.descripcion").value("queso rallado"))
-                .andExpect( jsonPath("$.cantidad").value(2));
+                .andExpect(jsonPath("$.data.nombre").value("Queso"))
+                .andExpect( jsonPath("$.data.precio").value(3000))
+                .andExpect( jsonPath("$.data.descripcion").value("queso rallado"))
+                .andExpect( jsonPath("$.data.cantidad").value(2));
     }
 
 
@@ -102,7 +103,7 @@ public class SuperMarketControllerIntegrationTest {
         Producto productoActualizado = new Producto(1L,"Morcilla", new BigDecimal(2000), "Morcilla Paladini", 2);
 
 
-        doNothing().when(productoServiceValidation.validarProducto(productoActualizado));
+        doNothing().when(productoServiceValidation).validarProducto(productoActualizado);
         when(productoService.actualizarProducto(producto.getId(), productoActualizado)).thenReturn(productoActualizado);
 
         String updatedProductAsString = objectMapper.writeValueAsString(productoActualizado);
@@ -118,7 +119,10 @@ public class SuperMarketControllerIntegrationTest {
         String jsonResult = result.getResponse().getContentAsString();
 
         System.out.println("Json result: " + jsonResult);
-        Producto productAsResult = objectMapper.readValue(jsonResult, Producto.class);
+
+        //Deseriliazation
+        SucessResponse<Producto> sucessResponse = objectMapper.readValue(jsonResult, SucessResponse.class);
+        Producto productAsResult = sucessResponse.getData();
 
         // Validate the updated product
         assertNotNull(productAsResult);

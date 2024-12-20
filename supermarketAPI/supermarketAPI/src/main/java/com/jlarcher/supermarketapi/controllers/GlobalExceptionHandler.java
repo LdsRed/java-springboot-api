@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(exception.getMessage());
         errorResponse.setTimeStamp(LocalDateTime.now());
-        String errorMessage = "No se encontro el id del producto o no existe";
+        String errorMessage = "Producto no encontrado con el ID provisto";
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 
     }
