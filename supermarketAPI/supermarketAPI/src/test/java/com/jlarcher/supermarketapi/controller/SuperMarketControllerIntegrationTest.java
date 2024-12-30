@@ -55,10 +55,10 @@ public class SuperMarketControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"nombre\":\"Jabon\",\"precio\":5000,\"descripcion\":\"jabon de tocador\"}"))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.nombre").value("Jabon"))
-                .andExpect( jsonPath("$.precio").value(5000))
-                .andExpect(jsonPath("$.descripcion").value("jabon de tocador"))
-                .andExpect( jsonPath("$.cantidad").value(5));
+                .andExpect(jsonPath("$.data.nombre").value("Jabon"))
+                .andExpect( jsonPath("$.data.precio").value(5000))
+                .andExpect(jsonPath("$.data.descripcion").value("jabon de tocador"))
+                .andExpect( jsonPath("$.data.cantidad").value(5));
     }
 
 
@@ -121,8 +121,8 @@ public class SuperMarketControllerIntegrationTest {
         System.out.println("Json result: " + jsonResult);
 
         //Deseriliazation
-        SucessResponse<Producto> sucessResponse = objectMapper.readValue(jsonResult, SucessResponse.class);
-        Producto productAsResult = sucessResponse.getData();
+        SucessResponse sucessResponse = objectMapper.readValue(jsonResult, SucessResponse.class);
+        Producto productAsResult = (Producto) sucessResponse.getData();
 
         // Validate the updated product
         assertNotNull(productAsResult);

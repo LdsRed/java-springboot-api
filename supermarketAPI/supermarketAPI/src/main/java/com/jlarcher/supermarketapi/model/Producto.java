@@ -52,6 +52,6 @@ public class Producto {
         Producto producto = (Producto) obj;
         return Objects.equals(id, producto.id)
                 && Objects.equals(nombre, producto.nombre)
-                && precio == producto.precio;
+                && Objects.equals(precio, producto.precio);
     }
 }

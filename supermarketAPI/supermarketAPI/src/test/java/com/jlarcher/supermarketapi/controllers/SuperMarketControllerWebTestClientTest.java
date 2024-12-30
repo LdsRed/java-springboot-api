@@ -1,0 +1,77 @@
+package com.jlarcher.supermarketapi.controllers;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jlarcher.supermarketapi.model.Producto;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.WebTestClient;
+
+import java.math.BigDecimal;
+
+import static org.hamcrest.Matchers.is;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+
+
+@SpringBootTest(webEnvironment = RANDOM_PORT)
+class SuperMarketControllerWebTestClientTest {
+
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private WebTestClient client;
+
+    @BeforeEach
+    void setUp() {
+        objectMapper = new ObjectMapper();
+    }
+
+    @Test
+    void createProducto() throws JsonProcessingException {
+
+        //Given a new product is created
+        Producto nuevoProducto = new Producto(1L, "Jabon", new BigDecimal(7000), "Jabon para lavar ropa", 10);
+
+        //When the product is created
+        client.post()
+                .uri("http://localhost:8080/api/productos")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(nuevoProducto)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody()
+                .jsonPath("$.data.nombre").value(is("Jabon"))
+                .jsonPath("$.data.precio").value(is(7000))
+                .jsonPath("$.data.descripcion").value(is("Jabon para lavar ropa"))
+                .jsonPath("$.data.cantidad").value(is(10));
+
+    }
+
+    @Test
+    void getAllProductos() {
+
+    }
+
+    @Test
+    void getProductoById() {
+        client.get()
+                .uri("http://localhost:8080/api/productos/1")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.data.nombre").isEqualTo("Jabon")
+                .jsonPath("$.data.precio").isEqualTo(7000)
+                .jsonPath("$.data.descripcion").isEqualTo("Jabon para lavar ropa")
+                .jsonPath("$.data.cantidad").isEqualTo(10);
+    }
+
+    @Test
+    void updateProducto() {
+    }
+
+    @Test
+    void deleteProducto() {
+    }
+}
