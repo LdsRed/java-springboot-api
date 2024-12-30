@@ -32,7 +32,7 @@ class SuperMarketControllerWebTestClientTest {
     void createProducto() throws JsonProcessingException {
 
         //Given a new product is created
-        Producto nuevoProducto = new Producto(1L, "Jabon", new BigDecimal(7000), "Jabon para lavar ropa", 10);
+        Producto nuevoProducto = new Producto(0L, "Jabon", new BigDecimal(7000), "Jabon para lavar ropa", 10);
 
         //When the product is created
         client.post()
@@ -51,7 +51,12 @@ class SuperMarketControllerWebTestClientTest {
 
     @Test
     void getAllProductos() {
-
+        client.get()
+                .uri("http://localhost:8080/api/productos")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.data.nombre").isEqualTo("Jabon");
     }
 
     @Test
@@ -73,5 +78,11 @@ class SuperMarketControllerWebTestClientTest {
 
     @Test
     void deleteProducto() {
+
+        client.delete()
+                .uri("http://localhost:8080/api/productos/1")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody();
     }
 }

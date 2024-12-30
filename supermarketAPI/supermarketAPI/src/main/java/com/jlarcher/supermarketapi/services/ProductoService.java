@@ -3,6 +3,7 @@ package com.jlarcher.supermarketapi.services;
 import com.jlarcher.supermarketapi.exceptions.ProductNotFoundException;
 import com.jlarcher.supermarketapi.model.Producto;
 import com.jlarcher.supermarketapi.repository.ProductoRepository;
+import org.springframework.transaction.annotation.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public class ProductoService {
         this.productoRepository = productoRepository;
     }
 
+    @Transactional
     public Producto crearProducto(Producto producto) {
 
         return productoRepository.findById(producto.getId())
@@ -30,18 +32,20 @@ public class ProductoService {
                 .orElseGet(() -> productoRepository.save(producto));
     }
 
+    @Transactional(readOnly = true)
     public List<Producto> listarProductos(){
         return productoRepository.findAll();
     }
 
 
+    @Transactional(readOnly = true)
     public Producto obtenerPorID(Long id){
             return productoRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado con el ID provisto"));
     }
 
 
-
+    @Transactional()
     public Producto actualizarProducto(Long id, Producto producto) {
         Producto productoExistente = productoRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("No se encontro el producto"));
@@ -55,7 +59,7 @@ public class ProductoService {
 
     }
 
-
+    @Transactional
     public void eliminarProducto(Long id) {
         if (!productoRepository.existsById(id)){
             log.error("El producto no existe");
