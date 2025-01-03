@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.math.BigDecimal;
@@ -16,6 +17,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@ActiveProfiles("intTest")
 class SuperMarketControllerWebTestClientTest {
 
     private ObjectMapper objectMapper;
@@ -56,7 +58,10 @@ class SuperMarketControllerWebTestClientTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("$.nombre").isEqualTo("Jabon");
+                .jsonPath("$[0].id").isEqualTo(1)
+                .jsonPath("$[0].nombre").isEqualTo("Gigabyte")
+                .jsonPath("$[0].cantidad").isEqualTo(5)
+                .jsonPath("$[0].precio").isEqualTo(5000.00);
     }
 
     @Test

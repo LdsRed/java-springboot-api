@@ -47,6 +47,15 @@ dependencies {
 
 }
 
+
+sourceSets {
+    intTest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+
 pitest {
     targetClasses =[ 'com.jlarcher.*']
     outputFormats = ['XML', 'HTML']

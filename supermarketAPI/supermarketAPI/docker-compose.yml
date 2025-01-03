@@ -11,6 +11,7 @@ services:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
     restart: always
     depends_on:
+      - supermarket_db_qa
       - supermarket_db_dev
       - supermarket_db_prod
 
@@ -74,3 +75,4 @@ services:
 volumes:
   mariadb_data_dev:
   mariadb_data_prod:
+  mariadb_data_qa:
