@@ -33,6 +33,25 @@ services:
       timeout: 10s
       retries: 3
 
+  supermarket_db_qa:
+    image: mariadb:10.11
+    container_name: db-qa
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_QA_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_QA_NAME}
+      MARIADB_USER: ${DB_QA_USER}
+      MARIADB_PASSWORD: ${DB_QA_PASSWORD}
+    ports:
+      - "3309:3306"
+    volumes:
+      - mariadb_data_qa:/var/lib/mysql
+    restart: always
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u${DB_QA_USER}", "-p${DB_QA_PASSWORD}" ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
   supermarket_db_prod:
     image: mariadb:10.11
     container_name: db-prod

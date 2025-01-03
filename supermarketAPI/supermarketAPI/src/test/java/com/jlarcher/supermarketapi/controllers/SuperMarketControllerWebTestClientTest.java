@@ -56,7 +56,7 @@ class SuperMarketControllerWebTestClientTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("$.data.nombre").isEqualTo("Jabon");
+                .jsonPath("$.nombre").isEqualTo("Jabon");
     }
 
     @Test
@@ -66,10 +66,10 @@ class SuperMarketControllerWebTestClientTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("$.data.nombre").isEqualTo("Jabon")
-                .jsonPath("$.data.precio").isEqualTo(7000)
-                .jsonPath("$.data.descripcion").isEqualTo("Jabon para lavar ropa")
-                .jsonPath("$.data.cantidad").isEqualTo(10);
+                .jsonPath("$.data.nombre").isEqualTo("Gigabyte")
+                .jsonPath("$.data.precio").isEqualTo(5000)
+                .jsonPath("$.data.descripcion").isEqualTo("Gigabyte RTX 5050")
+                .jsonPath("$.data.cantidad").isEqualTo(5);
     }
 
     @Test
@@ -82,7 +82,17 @@ class SuperMarketControllerWebTestClientTest {
         client.delete()
                 .uri("http://localhost:8080/api/productos/1")
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus().isNoContent()
+                .expectBody();
+    }
+
+     @Test
+    void delete_product_notfound() {
+
+        client.delete()
+                .uri("http://localhost:8080/api/productos/1")
+                .exchange()
+                .expectStatus().isNotFound()
                 .expectBody();
     }
 }
